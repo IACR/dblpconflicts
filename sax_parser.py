@@ -1,7 +1,11 @@
+import datetime
 import gzip
 import html
 import json
-from lxml import etree
+from xml.dom import pulldom
+from xml.sax import make_parser
+from xml.sax.handler import feature_external_ges
+
 from pathlib import Path
 import requests
 #import shutil
@@ -117,66 +121,83 @@ def parse_files(prefixes, args):
                     "title"    :"str",
                     "volume"   :"str",
                     "year"     :"str"}
+    tagcount = 0
     count = 0
     articles = []
     proceedings = {}
     article = None
-    for event, elem in etree.iterparse('data/dblp.xml', load_dtd=True, dtd_validation=True, encoding='utf-8'):
-        if elem.tag in ELEMENTS:
-            key = elem.get('key')
-            prefix = '/'.join(key.split('/')[:2])
-            if prefix in prefixes:
-                # Insert Publication information
-                article = {
-                    'key': elem.get('key'),
-                    'mdate': elem.get('mdate'),
-                    'type': elem.tag,
-                    'authors': [],
-                    'title': None,
-                    'year': None,
-                    'pages': None,
-                    'volume': None,
-                    'number': None,
-                    'publisher': None,
-                    'isbn': None,
-                    'series': None,
-                    'booktitle': None,
-                    'journal': None,
-                    'crossref': None
-                }
-
-                for e in ALL_FEATURES:
-                    data = elem.findall(e)
-
-                    if not data:
-                        continue
-                    if e == 'ee':
-                        for d in data:
-                            if 'doi.org/' in d.text:
-                                article['doi'] = d.text
-                    elif e == 'author':
-                        for d in data:
-                            orcid = d.attrib.get('orcid')
-                            article['authors'].append((html.unescape(d.text), orcid))
-                    else:
-                        cleaned = unicodedata.normalize('NFKD',
-                                                        etree.tostring(data[0], method='text', encoding='unicode')).encode(
-                                                            'ascii', 'ignore').decode('ascii')
-                        cleaned = cleaned.replace('\n', '')
-                        cleaned = cleaned.replace('\t', '')
-                        article[e] = cleaned
-                if elem.tag == 'proceedings':
-                    proceedings[article['key']] = article
-                else:
-                    articles.append(article)
-            else:
-                article = None
-            elem.clear()
-            count += 1
-            if args.verbose and (count % 10000 == 0):
-                print("Count: " + str(count) + " ")
+    parser = make_parser()
+    parser.setFeature(feature_external_ges, True)
+    verbose = False
+    text = ''
+    orcid = None
+    for event, node in pulldom.parse('data/dblp.xml', parser=parser):
+        match event:
+            case pulldom.START_ELEMENT:
+                tagcount += 1
+                if node.localName in ELEMENTS:
+                    count += 1
+                    if args.verbose and (count % 10000 == 0):
+                        print("Count: ", str(count), tagcount, len(articles), len(proceedings), str(datetime.datetime.now().time()))
+                    key = node.getAttribute('key')
+                    prefix = '/'.join(key.split('/')[:2])
+                    if prefix in prefixes:
+                        article = {
+                            'key': key,
+                            'mdate': node.getAttribute('mdate'),
+                            'type': node.tagName,
+                            'authors': [],
+                            'title': None,
+                            'year': None,
+                            'pages': None,
+                            'volume': None,
+                            'number': None,
+                            'publisher': None,
+                            'isbn': None,
+                            'series': None,
+                            'booktitle': None,
+                            'journal': None,
+                            'crossref': None
+                        }
+                elif article and node.localName == 'author':
+                    orcid = node.getAttribute('orcid')
+                    if not orcid:
+                        orcid = None
+                pass
+            case pulldom.END_ELEMENT:
+                if article:
+                    tagname = node.localName
+                    if tagname in ELEMENTS:
+                        if tagname == 'proceedings':
+                            proceedings[article['key']] = article
+                        else:
+                            articles.append(article)
+                        article = None
+                    elif tagname == 'ee':
+                        doi = text.strip()
+                        if 'doi.org/' in doi:
+                            article['doi'] = doi
+                            text = ''
+                    elif tagname == 'author':
+                        text = text.strip()
+                        if text:
+                            article['authors'].append((text, orcid))
+                        orcid = None
+                    elif tagname in ALL_FEATURES:
+                        article[tagname] = text.strip()
+                    elif tagname != 'sup' and tagname != 'sub':
+                        text = ''
+                pass
+            case pulldom.CHARACTERS:
+                if article:
+                    text += node.data
+                pass
+            case pulldom.END_DOCUMENT:
+                break
+            case _:
+                pass
     for article in articles:
-        if article['crossref']:
+        if article.get('crossref'):
             crossref = proceedings.get(article['crossref'])
             if crossref:
                 for key in article:
@@ -213,7 +234,7 @@ if __name__ == '__main__':
     argparser.add_argument('--verbose',
                            action='store_true')
     argparser.add_argument('--dtd_file',
-                           default='data/dblp.dtd')
+                           default='dblp.dtd')
     argparser.add_argument('--data_file',
                            default='data/dblp.xml')
     args = argparser.parse_args()

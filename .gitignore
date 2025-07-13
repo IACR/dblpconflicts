@@ -5,6 +5,8 @@ __pycache__/
 
 # Avoid checking in DBLP data.
 data/
+articles.json
+proceedings.json
 
 # C extensions
 *.so

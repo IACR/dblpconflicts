@@ -7,9 +7,7 @@ db = pymysql.connect(host='localhost',
                      passwd='dblpd@t@',
                      db='dblpconflicts',
                      user='dblpconflicts',
-                     charset='utf8',
-                     use_unicode=True,
-                     init_command='SET NAMES UTF8')
+                     charset='utf8mb4')
 cursor = db.cursor(pymysql.cursors.DictCursor)
 articles = json.loads(Path('articles.json').read_text(encoding='UTF-8'))
 counter = 0
