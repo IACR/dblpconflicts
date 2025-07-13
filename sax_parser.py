@@ -173,6 +173,7 @@ def parse_files(prefixes, args):
                         else:
                             articles.append(article)
                         article = None
+                        text = ''
                     elif tagname == 'ee':
                         doi = text.strip()
                         if 'doi.org/' in doi:
@@ -183,8 +184,10 @@ def parse_files(prefixes, args):
                         if text:
                             article['authors'].append((text, orcid))
                         orcid = None
+                        text = ''
                     elif tagname in ALL_FEATURES:
                         article[tagname] = text.strip()
+                        text = ''
                     elif tagname != 'sup' and tagname != 'sub':
                         text = ''
                 pass
