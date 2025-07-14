@@ -178,7 +178,7 @@ def parse_files(prefixes, args):
                         doi = text.strip()
                         if 'doi.org/' in doi:
                             article['doi'] = doi
-                            text = ''
+                        text = ''
                     elif tagname == 'author':
                         text = text.strip()
                         if text:
