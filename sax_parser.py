@@ -230,6 +230,48 @@ if __name__ == '__main__':
                 'conf/sp',
                 'conf/ccs',
                 'conf/ndss'}
+    # others to consider for inclusion:
+    # Real world cryptography, not available in DBLP
+    # 'conf/fc',      # Financial cryptography
+    # 'conf/ctrsa',   # The Cryptographer's Track at RSA Conference (CT-RSA)
+    # 'conf/esorics', # ESORICS
+    # 'journals/tifs', # IEEE Transactions on Information Forensics and Security
+    # 'journals/compsec', # Computers & Security
+    # 'journals/istr', # Journal of Informatoin Security and Applications
+    # 'conf/icbc2', # IEEE Conference on Blockchains and Cryptocurrency (ICBC)
+    # 'conf/asiaccs', # Asia CCS
+    # 'conf/eurosp'   # European Security & privacy
+    # 'conf/soups'    # Symposium on Useful Privacy and Security
+    # 'journals/popets', # Privacy Enhancing Technologies
+    # 'conf/securecom', # Security and Privacy in Communication Networks
+    # 'conf/cans',    # Cryptology and Network Security
+    # 'conf/acsac',   # Annual Computer Security Applications Conference
+    # 'conf/dsn',     # Dependable Systems and Networks
+    # 'conf/cfsw',    # IEEE Computer Security Foundations Workshop
+    # 'conf/cns',     # IEEE Conference and Communications and Network Security
+    # 'conf/acns',    # International Conference on Applied Cryptography and Network Security
+    # 'conf/sacrypt', # (SAC)
+    # 'conf/icisc',   # International Conference on Information Security and Cryptology
+    # 'conf/icics',   # International Conference on Information and Communication
+    # 'conf/sec',     # IFIP International Information Security Conference (SEC)
+    # 'conf/wisec',   # Conference on Security and Privacy in Wireless and Mobile Networks (WISEC)
+    # 'conf/host',    # IEEE International Symposium on Hardware Oriented Security and Trust
+    # 'conf/nspw',    # New Security Paradigms Workshop
+    # 'conf/ih',      # Information Hiding and Multimedia Security Workshop
+    # 'conf/acisp',   # Australasian Conference on Information Security and Privacy
+    # 'conf/africacrypt',
+    # 'conf/latincrypt',
+    # 'conf/csr2',    # International Conference on Cyber Security and Resilience
+    # 'conf/asiajcis', # Asia Joint COnference on information Security
+    # 'conf/wisa',    # International Conference on information Security Applications
+    # 'conf/asiapkc', # ACM Asia Public-Key Cryptography Workshop
+    # 'conf/lightsec', # International Workshop on Lightweight Cryptography for Security and Privacy
+    # 'conf/fdtc',    # Workshop on Fault Detection and Tolerance in Cryptography
+    # 'conf/blocktea', # International Conference on Blockchain Technology and Emerging Technologies
+    # 'conf/provsec', # Provable Security
+    # 'conf/ccsw-ws', # Cloud Computing Security Workshop (CCSW)
+    # 'conf/iwsec',   # International Workshop on Security (IWSEC)
+    # 'conf/iciss',   # International Conference on Information System Security (ICISS)
     import argparse
     argparser = argparse.ArgumentParser(description='xml parser')
     argparser.add_argument('--download',
