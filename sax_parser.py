@@ -224,13 +224,13 @@ if __name__ == '__main__':
                 'conf/fse',
                 'conf/ches',
                 'conf/rwc',
-                'conf/stoc',
-                'conf/focs',
                 'conf/uss',
                 'conf/sp',
                 'conf/ccs',
                 'conf/ndss'}
     # others to consider for inclusion:
+    # 'conf/stoc', # these completely dominate the results with people who
+    # 'conf/focs', # have never published anything on crypto and security.
     # Real world cryptography, not available in DBLP
     # 'conf/fc',      # Financial cryptography
     # 'conf/ctrsa',   # The Cryptographer's Track at RSA Conference (CT-RSA)
