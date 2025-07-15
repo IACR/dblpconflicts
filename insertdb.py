@@ -12,11 +12,13 @@ cursor = db.cursor(pymysql.cursors.DictCursor)
 articles = json.loads(Path('articles.json').read_text(encoding='UTF-8'))
 counter = 0
 for article in articles:
+    venue = '/'.join(article['key'].split('/')[:2])
     counter += 1
     if (counter % 1000 == 0):
         print('counter=', counter)
     args = (article['mdate'],
             article['key'],
+            venue,
             article['type'],
             article['title'],
             article['year'],
@@ -29,7 +31,7 @@ for article in articles:
             article.get('booktitle'),
             article.get('journal'),
             article.get('doi'))
-    cursor.execute('INSERT INTO `article` (mdate,dblpkey,type,title,year,pages,volume,number,publisher,isbn,series,booktitle,journal,doi) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', args)
+    cursor.execute('INSERT INTO `article` (mdate,dblpkey,venue,type,title,year,pages,volume,number,publisher,isbn,series,booktitle,journal,doi) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', args)
     pubkey = cursor.lastrowid
     authornumber = 0
     for author in article['authors']:
@@ -40,12 +42,13 @@ for article in articles:
         if parts[-1].isnumeric():
             parts.pop()
         name = ' '.join(parts)
+        lastname = parts[-1]
         cursor.execute("SELECT authorkey FROM author WHERE dblpkey=%s", (dblpkey,))
         row = cursor.fetchone()
         if row:
             authorkey = row['authorkey']
         else:
-            cursor.execute('INSERT INTO author (name,orcid,dblpkey) values (%s,%s,%s)', (name, orcid, dblpkey))
+            cursor.execute('INSERT INTO author (name,lastname,orcid,dblpkey) values (%s,%s,%s,%s)', (name, lastname, orcid, dblpkey))
             authorkey = cursor.lastrowid
         cursor.execute('INSERT INTO authorship (pubkey,authorkey,authornumber,publishedasname) VALUES (%s,%s,%s,%s)', (pubkey,authorkey,authornumber,name))
     db.commit()

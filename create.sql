@@ -6,6 +6,7 @@ CREATE TABLE article (
   `pubkey` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `mdate` date not null,
   `dblpkey` varchar(255) not null,
+  `venue` varchar(32) not null,
   `type` varchar(32) not null,
   `title` varchar(255) not null,
   `year` int not null,
@@ -22,6 +23,7 @@ CREATE TABLE article (
 CREATE TABLE author (
   `authorkey` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `lastname` varchar(128) NOT NULL,
   `orcid` varchar(32),
   `dblpkey` varchar(255) NOT NULL) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

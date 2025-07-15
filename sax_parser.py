@@ -223,7 +223,6 @@ if __name__ == '__main__':
                 'conf/pkc',
                 'conf/fse',
                 'conf/ches',
-                'conf/rwc',
                 'conf/uss',
                 'conf/sp',
                 'conf/ccs',
