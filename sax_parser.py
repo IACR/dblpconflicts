@@ -163,6 +163,10 @@ def parse_files(prefixes, args):
                     orcid = node.getAttribute('orcid')
                     if not orcid:
                         orcid = None
+                elif article and node.localName == 'sup':
+                    text += '<sup>'
+                elif article and node.localName == 'sub':
+                    text += '<sub>'
                 pass
             case pulldom.END_ELEMENT:
                 if article:
@@ -188,7 +192,11 @@ def parse_files(prefixes, args):
                     elif tagname in ALL_FEATURES:
                         article[tagname] = text.strip()
                         text = ''
-                    elif tagname != 'sup' and tagname != 'sub':
+                    elif tagname == 'sup':
+                        text += '</sup>'
+                    elif tagname == 'sub':
+                        text += '</sub>'
+                    else:
                         text = ''
                 pass
             case pulldom.CHARACTERS:
@@ -212,62 +220,62 @@ def parse_files(prefixes, args):
     output_file.write_text(json.dumps(list(proceedings.values()), indent=2), encoding='UTF-8')
 
 if __name__ == '__main__':
-    prefixes = {'journals/joc',
-                'journals/tosc',
-                'journals/tches',
-                'journals/cic',
-                'conf/crypto',
-                'conf/eurocrypt',
-                'conf/asiacrypt',
-                'conf/tcc',
-                'conf/pkc',
-                'conf/fse',
-                'conf/ches',
-                'conf/uss',
-                'conf/sp',
-                'conf/ccs',
-                'conf/ndss'}
+    prefixes = {'journals/joc': 'Journal of Cryptology',
+                'journals/tosc': 'Transactions on Symmetric Cryptology',
+                'journals/tches': 'Transactions on Cryptographic Hardware and Embedded Systems',
+                'journals/cic': 'Communications in Cryptology',
+                'conf/crypto': 'Crypto',
+                'conf/eurocrypt': 'Eurocrypt',
+                'conf/asiacrypt': 'Asiacrypt',
+                'conf/tcc': 'Theoretical Cryptography Conference',
+                'conf/pkc': 'Public Key Cryptography Conference',
+                'conf/fse': 'Fast Software Encryption Conference',
+                'conf/ches': 'Cryptographic Hardware and Embedded Systems Conference',
+                'conf/uss': 'Usenix Security',
+                'conf/sp': 'IEEE Security and Privacy',
+                'conf/ccs': 'ACM Computer and Communications Security',
+                'conf/ndss': 'Network and Distributed System Security'}
     # Real world cryptography is not available in DBLP
-    others = {'conf/fc',      # Financial cryptography
-              'conf/ctrsa',   # The Cryptographer's Track at RSA Conference (CT-RSA)
-              'conf/esorics', # ESORICS
-              'journals/tifs', # IEEE Transactions on Information Forensics and Security
-              'journals/compsec', # Computers & Security
-              'journals/istr', # Journal of Informatoin Security and Applications
-              'conf/icbc2', # IEEE Conference on Blockchains and Cryptocurrency (ICBC)
-              'conf/asiaccs', # Asia CCS
-              'conf/eurosp',   # European Security & privacy
-              'conf/soups',    # Symposium on Useful Privacy and Security
-              'journals/popets', # Privacy Enhancing Technologies
-              'conf/securecom', # Security and Privacy in Communication Networks
-              'conf/cans',    # Cryptology and Network Security
-              'conf/acsac',   # Annual Computer Security Applications Conference
-              'conf/dsn',     # Dependable Systems and Networks
-              'conf/cfsw',    # IEEE Computer Security Foundations Workshop
-              'conf/cns',     # IEEE Conference and Communications and Network Security
-              'conf/acns',    # International Conference on Applied Cryptography and Network Security
-              'conf/sacrypt', # (SAC)
-              'conf/icisc',   # International Conference on Information Security and Cryptology
-              'conf/icics',   # International Conference on Information and Communication
-              'conf/sec',     # IFIP International Information Security Conference (SEC)
-              'conf/wisec',   # Conference on Security and Privacy in Wireless and Mobile Networks (WISEC)
-              'conf/host',    # IEEE International Symposium on Hardware Oriented Security and Trust
-              'conf/nspw',    # New Security Paradigms Workshop
-              'conf/ih',      # Information Hiding and Multimedia Security Workshop
-              'conf/acisp',   # Australasian Conference on Information Security and Privacy
-              'conf/africacrypt',
-              'conf/latincrypt',
-              'conf/csr2',    # International Conference on Cyber Security and Resilience
-              'conf/asiajcis', # Asia Joint COnference on information Security
-              'conf/wisa',    # International Conference on information Security Applications
-              'conf/asiapkc', # ACM Asia Public-Key Cryptography Workshop
-              'conf/lightsec', # International Workshop on Lightweight Cryptography for Security and Privacy
-              'conf/fdtc',    # Workshop on Fault Detection and Tolerance in Cryptography
-              'conf/blocktea', # International Conference on Blockchain Technology and Emerging Technologies
-              'conf/provsec', # Provable Security
-              'conf/ccsw-ws', # Cloud Computing Security Workshop (CCSW)
-              'conf/iwsec',   # International Workshop on Security (IWSEC)
-              'conf/iciss'}   # International Conference on Information System Security (ICISS)
+    others = {'conf/fc': 'Financial cryptography',
+              'conf/ctrsa': "Cryptographer's Track at RSA Conference (CT-RSA)",
+              'conf/esorics': 'ESORICS',
+              'journals/tifs': 'IEEE Transactions on Information Forensics and Security',
+              'journals/compsec': "Computers & Security",
+              'journals/istr': 'Journal of Information Security and Applications',
+              'conf/icbc2': 'IEEE Conference on Blockchains and Cryptocurrency (ICBC)',
+              'conf/asiaccs': 'Asia CCS',
+              'conf/eurosp': 'European Security & privacy',
+              'conf/soups': 'Symposium on Useful Privacy and Security',
+              'journals/popets': 'Privacy Enhancing Technologies',
+              'conf/securecom': 'Security and Privacy in Communication Networks',
+              'conf/cans': 'Cryptology and Network Security',
+              'conf/acsac': 'Annual Computer Security Applications Conference',
+              'conf/dsn': 'Dependable Systems and Networks',
+              'conf/cfsw': 'IEEE Computer Security Foundations Workshop',
+              'conf/cns': 'IEEE Conference and Communications and Network Security',
+              'conf/acns': 'International Conference on Applied Cryptography and Network Security',
+              'conf/sacrypt': 'Selected Areas in Cryptology',
+              'conf/icisc': 'International Conference on Information Security and Cryptology (ICISC)',
+              'conf/icics': 'International Conference on Information and Communication (ICICS)',
+              'conf/sec': 'IFIP International Information Security Conference (SEC)',
+              'conf/wisec': 'Conference on Security and Privacy in Wireless and Mobile Networks (WISEC)',
+              'conf/host': 'IEEE International Symposium on Hardware Oriented Security and Trust',
+              'conf/nspw': 'New Security Paradigms Workshop',
+              'conf/ih': 'Information Hiding and Multimedia Security Workshop',
+              'conf/acisp': 'Australasian Conference on Information Security and Privacy',
+              'conf/africacrypt': 'AfricaCrypt',
+              'conf/latincrypt': 'LatinCrypt',
+              'conf/csr2': 'International Conference on Cyber Security and Resilience',
+              'conf/asiajcis': 'Asia Joint COnference on information Security',
+              'conf/wisa': 'International Conference on information Security Applications',
+              'conf/asiapkc': 'ACM Asia Public-Key Cryptography Workshop',
+              'conf/lightsec': 'International Workshop on Lightweight Cryptography for Security and Privacy',
+              'conf/fdtc': 'Workshop on Fault Detection and Tolerance in Cryptography',
+              'conf/blocktea': 'International Conference on Blockchain Technology and Emerging Technologies',
+              'conf/provsec': 'Provable Security',
+              'conf/ccsw-ws': 'Cloud Computing Security Workshop (CCSW)',
+              'conf/iwsec': 'International Workshop on Security (IWSEC)',
+              'conf/iciss': 'International Conference on Information System Security (ICISS)'}
     import argparse
     argparser = argparse.ArgumentParser(description='xml parser')
     argparser.add_argument('--download',
@@ -284,7 +292,7 @@ if __name__ == '__main__':
     if args.download:
         download_data(args)
     if args.add_others:
-        for other in others:
-            prefixes.add(other)
+        for key in others:
+            prefixes[key] = others.get(key)
     print('parsing...')
     parse_files(prefixes, args)
